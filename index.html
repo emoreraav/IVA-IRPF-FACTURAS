@@ -3,76 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>FactuControl Pro</title>
+    <title>FactuControl Dark</title>
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1043/1043431.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #000000;
-            --card-bg: rgba(28, 28, 30, 0.7);
+            --card-bg: rgba(28, 28, 30, 0.8);
             --ios-blue: #0A84FF;
-            --hucha-cian: #00BCD4;
-            --sueldo-verde: #32D74B;
+            --hucha-color: #00BCD4;
+            --sueldo-color: #32D74B;
         }
 
         body { 
             background-color: var(--bg-dark); 
             color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             padding-top: env(safe-area-inset-top);
         }
 
-        /* Efecto Glassmorphism iOS */
         .glass {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .ios-input {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             border-radius: 12px;
             padding: 14px;
             color: white;
-            font-size: 17px;
+            font-size: 16px;
             width: 100%;
             outline: none;
         }
 
-        .ios-input:focus {
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 2px var(--ios-blue);
+        /* Contenedor relativo para el botón X */
+        .input-container { position: relative; width: 100%; }
+        .clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8E8E93;
+            display: none;
+            cursor: pointer;
         }
 
         .label-mini {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: #8E8E93;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             margin-left: 4px;
-            letter-spacing: 0.5px;
         }
 
         .trim-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #8E8E93;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .trim-btn.active {
-            background: var(--ios-blue);
-            color: white;
-            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
-        }
+        .trim-btn.active { background: var(--ios-blue); color: white; }
 
         .btn-save {
             background: white;
@@ -82,28 +81,23 @@
             padding: 18px;
             border-radius: 16px;
             width: 100%;
-            transition: transform 0.1s;
         }
 
-        .btn-save:active { transform: scale(0.96); opacity: 0.9; }
-
-        /* Animación suave para el historial */
-        .factura-item {
-            animation: slideUp 0.4s ease-out forwards;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Estilo para las tarjetas oscuras con borde de color */
+        .card-hucha { border-left: 4px solid var(--hucha-color); }
+        .card-sueldo { border-left: 4px solid var(--sueldo-color); }
+        
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
         }
     </style>
 </head>
 <body class="pb-10">
 
-    <header class="glass sticky top-0 z-50 p-5 mb-6">
+    <header class="glass sticky top-0 z-50 p-5 mb-4">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-tight">Nueva Factura</h1>
-            <div id="trim-selector" class="flex bg-black/40 rounded-xl p-1 w-44">
+            <h1 class="text-xl font-bold tracking-tight">IVA/IRPF 2026</h1>
+            <div id="trim-selector" class="flex bg-black/40 rounded-xl p-1 w-40">
                 <button onclick="setTrim(1)" id="t1" class="trim-btn">1T</button>
                 <button onclick="setTrim(2)" id="t2" class="trim-btn">2T</button>
                 <button onclick="setTrim(3)" id="t3" class="trim-btn">3T</button>
@@ -112,92 +106,108 @@
         </div>
     </header>
 
-    <main class="px-5 max-w-md mx-auto space-y-5">
+    <main class="px-5 max-w-md mx-auto space-y-4">
         
-        <div class="glass rounded-3xl p-6 space-y-4">
-            <div>
-                <label class="label-mini">Cliente</label>
-                <input type="text" id="cliente" list="c-list" class="ios-input" placeholder="Nombre del cliente...">
-                <datalist id="c-list">
-                    <option value="BLOCK AUDIOVISUALS SL">
-                    <option value="ALBA AUDIOVISUALS BARCELONA SL">
-                    <option value="SH TECHNICAL CREW S.L.">
-                    <option value="LIANTO PRODUCTIONS S.L.">
-                </datalist>
-            </div>
-
+        <div class="glass rounded-3xl p-5 space-y-4">
             <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label class="label-mini">Fecha Factura</label>
+                    <input type="date" id="fecha" class="ios-input">
+                </div>
                 <div class="w-1/2">
                     <label class="label-mini">Nº Factura</label>
                     <input type="text" id="nfactura" class="ios-input" placeholder="2026-XX">
                 </div>
-                <div class="w-1/2">
-                    <label class="label-mini">Base (€)</label>
-                    <input type="number" id="base" inputmode="decimal" class="ios-input font-bold text-blue-400 text-xl" placeholder="0.00">
-                </div>
+            </div>
+
+            <div class="input-container">
+                <label class="label-mini">Cliente</label>
+                <input type="text" id="cliente" list="c-list" class="ios-input" placeholder="Nombre..." oninput="toggleClear(this)">
+                <i class="fas fa-times-circle clear-btn" id="btn-clear" onclick="clearInput()"></i>
+                <datalist id="c-list">
+                    <option value="BLOCK AUDIOVISUALS SL">
+                    <option value="ALBA AUDIOVISUALS BARCELONA SL">
+                    <option value="SH TECHNICAL CREW S.L.">
+                </datalist>
+            </div>
+
+            <div>
+                <label class="label-mini">Base Imponible (€)</label>
+                <input type="number" id="base" inputmode="decimal" class="ios-input font-bold text-blue-400 text-2xl" placeholder="0.00">
             </div>
         </div>
 
-        <div class="space-y-4">
-            <div class="glass rounded-3xl p-6">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-gray-400 font-medium">Total a Recibir</span>
-                    <span id="res-total" class="text-2xl font-bold text-white">0,00 €</span>
+        <div class="space-y-3">
+            <div class="glass rounded-2xl p-5 border-l-4 border-blue-500">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-400 text-sm">Total a Recibir</span>
+                    <span id="res-total" class="text-xl font-bold">0,00 €</span>
                 </div>
-                <div class="flex justify-between text-xs font-bold text-gray-500 uppercase tracking-widest border-t border-white/5 pt-3">
-                    <span>IVA (21%): <span id="res-iva" class="text-gray-300">0,00</span></span>
-                    <span>IRPF (15%): <span id="res-irpf" class="text-gray-300">0,00</span></span>
+                <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase">
+                    <span>IVA (21%): <span id="res-iva">0,00</span></span>
+                    <span>IRPF (15%): <span id="res-irpf">0,00</span></span>
                 </div>
             </div>
             
-            <div class="bg-[#00BCD4] rounded-3xl p-6 text-white shadow-xl shadow-cyan-950/20">
-                <div class="flex justify-between items-start mb-4">
+            <div class="glass rounded-2xl p-5 card-hucha">
+                <div class="flex justify-between items-start mb-3">
                     <div>
-                        <h3 class="text-[11px] font-black uppercase tracking-widest opacity-70">Reserva Hucha Total</h3>
-                        <p id="res-hucha" class="text-4xl font-black">0,00 €</p>
+                        <h3 class="text-[10px] font-bold uppercase text-cyan-500 mb-1">Reserva Hucha Total</h3>
+                        <p id="res-hucha" class="text-3xl font-black">0,00 €</p>
                     </div>
-                    <i class="fas fa-piggy-bank text-3xl opacity-40"></i>
+                    <i class="fas fa-piggy-bank text-xl text-cyan-500 opacity-50"></i>
                 </div>
-                <div class="grid grid-cols-2 gap-4 border-t border-black/10 pt-4">
+                <div class="flex gap-6 border-t border-white/5 pt-3">
                     <div>
-                        <p class="text-[9px] font-bold uppercase opacity-60">Ahorro IVA (30%)</p>
-                        <p id="res-hucha-iva" class="text-lg font-bold">0,00 €</p>
+                        <p class="text-[9px] font-bold uppercase text-gray-500">IVA (30%)</p>
+                        <p id="res-hucha-iva" class="text-sm font-bold text-gray-200">0,00 €</p>
                     </div>
                     <div>
-                        <p class="text-[9px] font-bold uppercase opacity-60">Ahorro IRPF (16%)</p>
-                        <p id="res-hucha-irpf" class="text-lg font-bold">0,00 €</p>
+                        <p class="text-[9px] font-bold uppercase text-gray-500">IRPF (16%)</p>
+                        <p id="res-hucha-irpf" class="text-sm font-bold text-gray-200">0,00 €</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-[#32D74B] rounded-3xl p-6 text-black shadow-xl shadow-green-950/20">
+            <div class="glass rounded-2xl p-5 card-sueldo">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="text-[11px] font-black uppercase tracking-widest opacity-60">Sueldo Limpio Real</h3>
-                        <p id="res-limpio" class="text-4xl font-black">0,00 €</p>
+                        <h3 class="text-[10px] font-bold uppercase text-green-500 mb-1">Sueldo Limpio Real</h3>
+                        <p id="res-limpio" class="text-3xl font-black">0,00 €</p>
                     </div>
-                    <i class="fas fa-wallet text-3xl opacity-30"></i>
+                    <i class="fas fa-wallet text-xl text-green-500 opacity-50"></i>
                 </div>
             </div>
         </div>
 
-        <button onclick="saveFactura()" class="btn-save shadow-2xl">
-            Guardar Factura
-        </button>
+        <button onclick="saveFactura()" class="btn-save shadow-xl">Guardar</button>
 
-        <div class="mt-10 pb-10">
+        <div class="mt-8 pb-10">
             <div class="flex justify-between items-end px-2 mb-4">
-                <h2 class="text-xl font-bold">Historial <span id="label-t" class="text-blue-500">1T</span></h2>
-                <button onclick="exportCSV()" class="text-blue-500 font-bold text-sm">Exportar CSV</button>
+                <h2 class="text-lg font-bold">Historial <span id="label-t" class="text-blue-500">1T</span></h2>
+                <button onclick="exportCSV()" class="text-blue-500 font-bold text-xs uppercase">Exportar CSV</button>
             </div>
-            <div id="historial" class="space-y-3 text-sm">
-                </div>
+            <div id="historial" class="space-y-2"></div>
         </div>
     </main>
 
     <script>
         let trim = Math.floor(new Date().getMonth() / 3) + 1;
-        let db = JSON.parse(localStorage.getItem('factu_ios_2026')) || [];
+        let db = JSON.parse(localStorage.getItem('factu_v4')) || [];
+        
+        // Poner fecha de hoy por defecto
+        document.getElementById('fecha').valueAsDate = new Date();
+
+        function toggleClear(input) {
+            document.getElementById('btn-clear').style.display = input.value ? 'block' : 'none';
+        }
+
+        function clearInput() {
+            const input = document.getElementById('cliente');
+            input.value = '';
+            toggleClear(input);
+            input.focus();
+        }
 
         function setTrim(t) {
             trim = t;
@@ -207,83 +217,87 @@
             render();
         }
 
-        document.getElementById('base').addEventListener('input', function() {
-            const bi = parseFloat(this.value) || 0;
+        const inputBase = document.getElementById('base');
+        inputBase.addEventListener('input', updateVisuals);
+
+        function updateVisuals() {
+            const bi = parseFloat(inputBase.value) || 0;
             const iva = bi * 0.21;
             const irpf = bi * 0.15;
             const totalRecibido = bi + iva - irpf;
+            const hIva = iva * 0.30;
+            const hIrpf = bi * 0.16;
+            const totalH = hIva + hIrpf;
             
-            // Lógica Excel exacta
-            const ahorroIva = iva * 0.30;
-            const ahorroIrpf = bi * 0.16;
-            const totalHucha = ahorroIva + ahorroIrpf;
-            const sueldoLimpio = totalRecibido - totalHucha;
-            
-            const fmt = (n) => n.toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
-            
-            document.getElementById('res-total').innerText = fmt(totalRecibido);
-            document.getElementById('res-iva').innerText = fmt(iva);
-            document.getElementById('res-irpf').innerText = fmt(irpf);
-            document.getElementById('res-hucha').innerText = fmt(totalHucha);
-            document.getElementById('res-hucha-iva').innerText = fmt(ahorroIva);
-            document.getElementById('res-hucha-irpf').innerText = fmt(ahorroIrpf);
-            document.getElementById('res-limpio').innerText = fmt(sueldoLimpio);
-        });
+            const f = (n) => n.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+            document.getElementById('res-total').innerText = f(totalRecibido);
+            document.getElementById('res-iva').innerText = f(iva);
+            document.getElementById('res-irpf').innerText = f(irpf);
+            document.getElementById('res-hucha').innerText = f(totalH);
+            document.getElementById('res-hucha-iva').innerText = f(hIva);
+            document.getElementById('res-hucha-irpf').innerText = f(hIrpf);
+            document.getElementById('res-limpio').innerText = f(totalRecibido - totalH);
+        }
 
         function saveFactura() {
             const c = document.getElementById('cliente').value;
-            const bi = parseFloat(document.getElementById('base').value) || 0;
+            const bi = parseFloat(inputBase.value) || 0;
+            const fec = document.getElementById('fecha').value;
             if(!c || !bi) return;
 
-            db.push({
-                t: trim,
-                c: c,
-                n: document.getElementById('nfactura').value || 'S/N',
-                bi: bi,
-                fecha: new Date().toLocaleDateString('es-ES')
-            });
+            // Guardamos con la fecha seleccionada
+            db.push({ t: trim, c, n: document.getElementById('nfactura').value || 'S/N', bi, d: fec });
+            localStorage.setItem('factu_v4', JSON.stringify(db));
             
-            localStorage.setItem('factu_ios_2026', JSON.stringify(db));
-            
-            // Reset
-            document.getElementById('base').value = '';
+            // Limpiar
+            inputBase.value = '';
             document.getElementById('nfactura').value = '';
-            document.dispatchEvent(new Event('input', { bubbles: true })); // Reset visual
+            document.getElementById('cliente').value = '';
+            updateVisuals();
             render();
+        }
+
+        function loadToEdit(id) {
+            const item = db.find(f => f.d + f.bi + f.c === id); // Buscador simple por id compuesto
+            if(item) {
+                document.getElementById('cliente').value = item.c;
+                document.getElementById('nfactura').value = item.n;
+                document.getElementById('base').value = item.bi;
+                document.getElementById('fecha').value = item.d;
+                updateVisuals();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         function render() {
             const box = document.getElementById('historial');
             const filtered = db.filter(f => f.t === trim).reverse();
-            box.innerHTML = filtered.length ? '' : '<p class="text-center text-gray-600 py-10 italic">No hay registros</p>';
+            box.innerHTML = filtered.length ? '' : '<p class="text-center text-gray-600 py-10">Sin datos</p>';
             
             filtered.forEach(f => {
                 const total = f.bi + (f.bi * 0.21) - (f.bi * 0.15);
+                // Convertir fecha YYYY-MM-DD a DD/MM/YYYY
+                const fechaLegible = f.d.split('-').reverse().join('/');
+                const uniqueId = f.d + f.bi + f.c;
+
                 box.innerHTML += `
-                    <div class="glass p-4 rounded-2xl flex justify-between items-center factura-item">
+                    <div class="glass p-4 rounded-xl flex justify-between items-center" onclick="loadToEdit('${uniqueId}')">
                         <div>
-                            <p class="font-bold text-white">${f.c}</p>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${f.n} • ${f.fecha}</p>
+                            <p class="font-bold text-sm text-white">${f.c}</p>
+                            <p class="text-[10px] text-gray-500 font-bold">${f.n} • ${fechaLegible}</p>
                         </div>
-                        <div class="text-right">
-                            <p class="font-black text-blue-400">${total.toFixed(2)} €</p>
-                        </div>
+                        <p class="font-black text-blue-400">${total.toFixed(2)} €</p>
                     </div>`;
             });
         }
 
         function exportCSV() {
-            const data = db.filter(f => f.t === trim);
-            if(!data.length) return;
-            let csv = "\ufeffFecha;Factura;Cliente;Base;IVA;IRPF\n";
-            data.forEach(f => {
-                csv += `${f.fecha};${f.n};${f.c};${f.bi.toFixed(2)};${(f.bi*0.21).toFixed(2)};${(f.bi*0.15).toFixed(2)}\n`;
-            });
+            let csv = "\ufeffFecha;Factura;Cliente;Base\n";
+            db.filter(f => f.t === trim).forEach(f => csv += `${f.d};${f.n};${f.c};${f.bi}\n`);
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `Facturas_${trim}T_2026.csv`;
+            a.href = URL.createObjectURL(blob);
+            a.download = `Facturas_${trim}T.csv`;
             a.click();
         }
 
