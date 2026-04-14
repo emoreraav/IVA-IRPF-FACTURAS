@@ -3,65 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>FactuControl Dark</title>
+    <title>FactuControl Pro 2026</title>
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1043/1043431.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #000000;
-            --card-bg: rgba(28, 28, 30, 0.8);
+            --card-bg: rgba(28, 28, 30, 0.85);
             --ios-blue: #0A84FF;
             --hucha-color: #00BCD4;
             --sueldo-color: #32D74B;
         }
-
         body { 
             background-color: var(--bg-dark); 
             color: white;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             padding-top: env(safe-area-inset-top);
         }
-
         .glass {
             background: var(--card-bg);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         .ios-input {
             background: rgba(255, 255, 255, 0.1);
             border: none;
             border-radius: 12px;
-            padding: 14px;
+            padding: 12px;
             color: white;
             font-size: 16px;
             width: 100%;
             outline: none;
+            appearance: none;
         }
-
-        /* Contenedor relativo para el botón X */
         .input-container { position: relative; width: 100%; }
         .clear-btn {
             position: absolute;
             right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            bottom: 14px;
             color: #8E8E93;
             display: none;
-            cursor: pointer;
         }
-
         .label-mini {
             font-size: 10px;
             font-weight: 700;
             color: #8E8E93;
             text-transform: uppercase;
             margin-bottom: 5px;
-            margin-left: 4px;
+            display: block;
         }
-
         .trim-btn {
             flex: 1;
             padding: 8px;
@@ -70,9 +62,7 @@
             font-weight: 600;
             color: #8E8E93;
         }
-
         .trim-btn.active { background: var(--ios-blue); color: white; }
-
         .btn-save {
             background: white;
             color: black;
@@ -81,20 +71,16 @@
             padding: 18px;
             border-radius: 16px;
             width: 100%;
+            margin-top: 10px;
         }
-
-        /* Estilo para las tarjetas oscuras con borde de color */
         .card-hucha { border-left: 4px solid var(--hucha-color); }
         .card-sueldo { border-left: 4px solid var(--sueldo-color); }
-        
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-        }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
 <body class="pb-10">
 
-    <header class="glass sticky top-0 z-50 p-5 mb-4">
+    <header class="glass sticky top-0 z-50 p-4 mb-4">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-tight">IVA/IRPF 2026</h1>
             <div id="trim-selector" class="flex bg-black/40 rounded-xl p-1 w-40">
@@ -109,14 +95,14 @@
     <main class="px-5 max-w-md mx-auto space-y-4">
         
         <div class="glass rounded-3xl p-5 space-y-4">
-            <div class="flex gap-4">
-                <div class="w-1/2">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
                     <label class="label-mini">Fecha Factura</label>
-                    <input type="date" id="fecha" class="ios-input">
+                    <input type="date" id="fecha" class="ios-input text-sm">
                 </div>
-                <div class="w-1/2">
+                <div>
                     <label class="label-mini">Nº Factura</label>
-                    <input type="text" id="nfactura" class="ios-input" placeholder="2026-XX">
+                    <input type="text" id="nfactura" class="ios-input" placeholder="2026-01">
                 </div>
             </div>
 
@@ -128,6 +114,8 @@
                     <option value="BLOCK AUDIOVISUALS SL">
                     <option value="ALBA AUDIOVISUALS BARCELONA SL">
                     <option value="SH TECHNICAL CREW S.L.">
+                    <option value="LIANTO PRODUCTIONS S.L.">
+                    <option value="FYRSCREEN S.L.">
                 </datalist>
             </div>
 
@@ -145,25 +133,25 @@
                 </div>
                 <div class="flex justify-between text-[10px] font-bold text-gray-500 uppercase">
                     <span>IVA (21%): <span id="res-iva">0,00</span></span>
-                    <span>IRPF (15%): <span id="res-irpf">0,00</span></span>
+                    <span>RET (15%): <span id="res-irpf">0,00</span></span>
                 </div>
             </div>
             
             <div class="glass rounded-2xl p-5 card-hucha">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <h3 class="text-[10px] font-bold uppercase text-cyan-500 mb-1">Reserva Hucha Total</h3>
+                        <h3 class="text-[10px] font-bold uppercase text-cyan-500 mb-1">Total a la Hucha</h3>
                         <p id="res-hucha" class="text-3xl font-black">0,00 €</p>
                     </div>
                     <i class="fas fa-piggy-bank text-xl text-cyan-500 opacity-50"></i>
                 </div>
                 <div class="flex gap-6 border-t border-white/5 pt-3">
                     <div>
-                        <p class="text-[9px] font-bold uppercase text-gray-500">IVA (30%)</p>
+                        <p class="text-[9px] font-bold uppercase text-gray-500">Ahorro IVA (30%)</p>
                         <p id="res-hucha-iva" class="text-sm font-bold text-gray-200">0,00 €</p>
                     </div>
                     <div>
-                        <p class="text-[9px] font-bold uppercase text-gray-500">IRPF (16%)</p>
+                        <p class="text-[9px] font-bold uppercase text-gray-500">Ahorro IRPF (16%)</p>
                         <p id="res-hucha-irpf" class="text-sm font-bold text-gray-200">0,00 €</p>
                     </div>
                 </div>
@@ -172,7 +160,7 @@
             <div class="glass rounded-2xl p-5 card-sueldo">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="text-[10px] font-bold uppercase text-green-500 mb-1">Sueldo Limpio Real</h3>
+                        <h3 class="text-[10px] font-bold uppercase text-green-500 mb-1">Sueldo Limpio</h3>
                         <p id="res-limpio" class="text-3xl font-black">0,00 €</p>
                     </div>
                     <i class="fas fa-wallet text-xl text-green-500 opacity-50"></i>
@@ -180,12 +168,12 @@
             </div>
         </div>
 
-        <button onclick="saveFactura()" class="btn-save shadow-xl">Guardar</button>
+        <button onclick="saveFactura()" class="btn-save shadow-xl">Guardar Factura</button>
 
         <div class="mt-8 pb-10">
             <div class="flex justify-between items-end px-2 mb-4">
                 <h2 class="text-lg font-bold">Historial <span id="label-t" class="text-blue-500">1T</span></h2>
-                <button onclick="exportCSV()" class="text-blue-500 font-bold text-xs uppercase">Exportar CSV</button>
+                <button onclick="exportCSV()" class="text-blue-500 font-bold text-xs uppercase tracking-widest">CSV</button>
             </div>
             <div id="historial" class="space-y-2"></div>
         </div>
@@ -193,21 +181,11 @@
 
     <script>
         let trim = Math.floor(new Date().getMonth() / 3) + 1;
-        let db = JSON.parse(localStorage.getItem('factu_v4')) || [];
-        
-        // Poner fecha de hoy por defecto
+        let db = JSON.parse(localStorage.getItem('factu_v5_final')) || [];
         document.getElementById('fecha').valueAsDate = new Date();
 
-        function toggleClear(input) {
-            document.getElementById('btn-clear').style.display = input.value ? 'block' : 'none';
-        }
-
-        function clearInput() {
-            const input = document.getElementById('cliente');
-            input.value = '';
-            toggleClear(input);
-            input.focus();
-        }
+        function toggleClear(input) { document.getElementById('btn-clear').style.display = input.value ? 'block' : 'none'; }
+        function clearInput() { const i = document.getElementById('cliente'); i.value = ''; toggleClear(i); i.focus(); }
 
         function setTrim(t) {
             trim = t;
@@ -223,33 +201,35 @@
         function updateVisuals() {
             const bi = parseFloat(inputBase.value) || 0;
             const iva = bi * 0.21;
-            const irpf = bi * 0.15;
-            const totalRecibido = bi + iva - irpf;
-            const hIva = iva * 0.30;
-            const hIrpf = bi * 0.16;
-            const totalH = hIva + hIrpf;
+            const ret = bi * 0.15;
+            const totalRecibido = bi + iva - ret;
+
+            // Lógica exacta del Excel
+            const ahorroIva = iva * 0.30; // Ahorro IVA (30%)
+            const ahorroIrpf = bi * 0.16; // Ahorro IRPF (16%)
+            const totalHucha = ahorroIva + ahorroIrpf; // Total a la hucha
+            const sueldoLimpio = totalRecibido - totalHucha; // Sueldo Limpio
             
-            const f = (n) => n.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+            const f = (n) => n.toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
+            
             document.getElementById('res-total').innerText = f(totalRecibido);
             document.getElementById('res-iva').innerText = f(iva);
-            document.getElementById('res-irpf').innerText = f(irpf);
-            document.getElementById('res-hucha').innerText = f(totalH);
-            document.getElementById('res-hucha-iva').innerText = f(hIva);
-            document.getElementById('res-hucha-irpf').innerText = f(hIrpf);
-            document.getElementById('res-limpio').innerText = f(totalRecibido - totalH);
+            document.getElementById('res-irpf').innerText = f(ret);
+            document.getElementById('res-hucha').innerText = f(totalHucha);
+            document.getElementById('res-hucha-iva').innerText = f(ahorroIva);
+            document.getElementById('res-hucha-irpf').innerText = f(ahorroIrpf);
+            document.getElementById('res-limpio').innerText = f(sueldoLimpio);
         }
 
         function saveFactura() {
             const c = document.getElementById('cliente').value;
             const bi = parseFloat(inputBase.value) || 0;
-            const fec = document.getElementById('fecha').value;
+            const d = document.getElementById('fecha').value;
             if(!c || !bi) return;
 
-            // Guardamos con la fecha seleccionada
-            db.push({ t: trim, c, n: document.getElementById('nfactura').value || 'S/N', bi, d: fec });
-            localStorage.setItem('factu_v4', JSON.stringify(db));
+            db.push({ t: trim, c, n: document.getElementById('nfactura').value || 'S/N', bi, d });
+            localStorage.setItem('factu_v5_final', JSON.stringify(db));
             
-            // Limpiar
             inputBase.value = '';
             document.getElementById('nfactura').value = '';
             document.getElementById('cliente').value = '';
@@ -258,7 +238,7 @@
         }
 
         function loadToEdit(id) {
-            const item = db.find(f => f.d + f.bi + f.c === id); // Buscador simple por id compuesto
+            const item = db.find(f => (f.d + f.bi + f.c) === id);
             if(item) {
                 document.getElementById('cliente').value = item.c;
                 document.getElementById('nfactura').value = item.n;
@@ -271,20 +251,17 @@
 
         function render() {
             const box = document.getElementById('historial');
-            const filtered = db.filter(f => f.t === trim).reverse();
-            box.innerHTML = filtered.length ? '' : '<p class="text-center text-gray-600 py-10">Sin datos</p>';
+            const filtered = db.filter(f => f.t === trim).sort((a,b) => new Date(b.d) - new Date(a.d));
+            box.innerHTML = filtered.length ? '' : '<p class="text-center text-gray-600 py-10 text-sm italic">Trimestre sin registros</p>';
             
             filtered.forEach(f => {
                 const total = f.bi + (f.bi * 0.21) - (f.bi * 0.15);
-                // Convertir fecha YYYY-MM-DD a DD/MM/YYYY
                 const fechaLegible = f.d.split('-').reverse().join('/');
-                const uniqueId = f.d + f.bi + f.c;
-
                 box.innerHTML += `
-                    <div class="glass p-4 rounded-xl flex justify-between items-center" onclick="loadToEdit('${uniqueId}')">
+                    <div class="glass p-4 rounded-xl flex justify-between items-center active:bg-white/10" onclick="loadToEdit('${f.d + f.bi + f.c}')">
                         <div>
                             <p class="font-bold text-sm text-white">${f.c}</p>
-                            <p class="text-[10px] text-gray-500 font-bold">${f.n} • ${fechaLegible}</p>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase">${f.n} • ${fechaLegible}</p>
                         </div>
                         <p class="font-black text-blue-400">${total.toFixed(2)} €</p>
                     </div>`;
@@ -292,12 +269,16 @@
         }
 
         function exportCSV() {
-            let csv = "\ufeffFecha;Factura;Cliente;Base\n";
-            db.filter(f => f.t === trim).forEach(f => csv += `${f.d};${f.n};${f.c};${f.bi}\n`);
+            let csv = "\ufeffFecha;Factura;Cliente;Base;IVA;RET;Hucha;Limpio\n";
+            db.filter(f => f.t === trim).forEach(f => {
+                const h = (f.bi * 0.21 * 0.3) + (f.bi * 0.16);
+                const l = (f.bi + (f.bi * 0.21) - (f.bi * 0.15)) - h;
+                csv += `${f.d};${f.n};${f.c};${f.bi};${(f.bi*0.21).toFixed(2)};${(f.bi*0.15).toFixed(2)};${h.toFixed(2)};${l.toFixed(2)}\n`;
+            });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `Facturas_${trim}T.csv`;
+            a.download = `Facturas_${trim}T_2026.csv`;
             a.click();
         }
 
