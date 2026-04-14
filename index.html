@@ -2,185 +2,167 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FactuControl iOS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Facturas 2026</title>
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1043/1043431.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .ios-input { @apply w-full bg-gray-100 border-none rounded-xl p-4 mb-4 text-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all; }
-        .tab-active { @apply bg-blue-600 text-white shadow-md; }
+        body { font-family: -apple-system, sans-serif; background-color: #F2F2F7; padding-top: env(safe-area-inset-top); }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-b: 1px solid #D1D1D6; }
+        .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .input-ios { background: #E9E9EB; border-radius: 12px; padding: 15px; width: 100%; border: none; font-size: 17px; outline: none; margin-top: 5px; margin-bottom: 15px; }
+        .label-ios { font-size: 12px; font-weight: 700; color: #8E8E93; text-transform: uppercase; margin-left: 5px; }
+        .tab-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 700; border-radius: 8px; transition: 0.2s; }
+        .tab-btn.active { background: #007AFF; color: white; }
+        .btn-black { background: #000; color: #fff; border-radius: 18px; width: 100%; padding: 20px; font-weight: 700; font-size: 18px; margin-top: 10px; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 pb-20">
+<body class="pb-10">
 
-    <header class="sticky top-0 glass z-50 border-b border-gray-200 p-6 flex justify-between items-center">
-        <h1 class="text-2xl font-bold tracking-tight">Nueva Factura</h1>
-        <div id="trimestre-selector" class="flex bg-gray-200 rounded-lg p-1 text-xs font-bold">
-            <button onclick="setTrimestre(1)" id="t1" class="px-3 py-1 rounded-md">1T</button>
-            <button onclick="setTrimestre(2)" id="t2" class="px-3 py-1 rounded-md">2T</button>
-            <button onclick="setTrimestre(3)" id="t3" class="px-3 py-1 rounded-md">3T</button>
-            <button onclick="setTrimestre(4)" id="t4" class="px-3 py-1 rounded-md">4T</button>
+    <header class="glass-header sticky top-0 z-50 p-4">
+        <div class="flex justify-between items-center max-w-md mx-auto">
+            <h1 class="text-xl font-extrabold">Factura Nueva</h1>
+            <div id="trim-selector" class="flex bg-[#E3E3E8] rounded-lg p-1 w-48">
+                <button onclick="setTrim(1)" id="t1" class="tab-btn">1T</button>
+                <button onclick="setTrim(2)" id="t2" class="tab-btn">2T</button>
+                <button onclick="setTrim(3)" id="t3" class="tab-btn">3T</button>
+                <button onclick="setTrim(4)" id="t4" class="tab-btn">4T</button>
+            </div>
         </div>
     </header>
 
-    <main class="p-6 max-w-md mx-auto">
-        <div class="space-y-1">
-            <label class="text-xs font-semibold text-gray-500 ml-2 uppercase">Cliente</label>
-            <input type="text" id="cliente" list="clientes-list" placeholder="Seleccionar o escribir..." class="ios-input">
-            <datalist id="clientes-list">
+    <main class="p-4 max-w-md mx-auto">
+        <div class="card">
+            <label class="label-ios">Cliente</label>
+            <input type="text" id="cliente" list="c-list" class="input-ios" placeholder="Nombre...">
+            <datalist id="c-list">
                 <option value="BLOCK AUDIOVISUALS SL">
                 <option value="ALBA AUDIOVISUALS BARCELONA SL">
                 <option value="SH TECHNICAL CREW S.L.">
-                <option value="LIANTO PRODUCTIONS S.L.">
-                <option value="FYRSCREEN S.L.">
             </datalist>
 
-            <label class="text-xs font-semibold text-gray-500 ml-2 uppercase">Nº Factura</label>
-            <input type="text" id="n-factura" placeholder="2026-XX" class="ios-input">
-
-            <label class="text-xs font-semibold text-gray-500 ml-2 uppercase">Base Imponible (€)</label>
-            <input type="number" id="base-imponible" inputmode="decimal" placeholder="0,00" class="ios-input text-2xl font-bold">
-        </div>
-
-        <div class="mt-4 space-y-4">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-                <div class="flex justify-between mb-2">
-                    <span class="text-gray-500 text-sm">Total a Recibir</span>
-                    <span id="total-recibido" class="font-bold text-blue-600">0,00 €</span>
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label class="label-ios">Nº Factura</label>
+                    <input type="text" id="nfactura" class="input-ios" placeholder="2026-XX">
                 </div>
-                <div class="border-t border-gray-50 my-2"></div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-400 italic font-medium text-xs text-cyan-600">IVA (21%): <span id="iva-calculado">0,00 €</span></span>
-                    <span class="text-gray-400 italic font-medium text-xs text-red-400">IRPF (15%): <span id="irpf-calculado">0,00 €</span></span>
+                <div class="w-1/2">
+                    <label class="label-ios">Base (€)</label>
+                    <input type="number" id="base" inputmode="decimal" class="input-ios font-bold text-blue-600" placeholder="0.00">
                 </div>
             </div>
+        </div>
 
-            <div class="bg-cyan-500 p-5 rounded-2xl shadow-lg text-white">
-                <h3 class="text-xs uppercase font-bold opacity-80 mb-3">Reserva Fiscal (La Hucha)</h3>
-                <div class="flex justify-between items-end">
+        <div class="card !p-0 overflow-hidden border-none">
+            <div class="p-5">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-gray-500 font-medium">Total a Recibir</span>
+                    <span id="res-total" class="text-xl font-bold text-blue-600">0,00 €</span>
+                </div>
+                <div class="flex justify-between text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+                    <span>IVA: <span id="res-iva">0,00</span></span>
+                    <span>IRPF: <span id="res-irpf">0,00</span></span>
+                </div>
+            </div>
+            
+            <div class="bg-[#00BCD4] p-6 text-white">
+                <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-3xl font-bold" id="total-hucha">0,00 €</p>
-                        <p class="text-[10px] opacity-80 mt-1">IVA (30%) + IRPF (16%)</p>
+                        <p class="text-[11px] font-bold uppercase opacity-80">Reserva Hucha (30% IVA + 16% BI)</p>
+                        <p id="res-hucha" class="text-3xl font-black">0,00 €</p>
                     </div>
-                    <i class="fa-solid fa-piggy-bank text-4xl opacity-30"></i>
+                    <i class="fas fa-piggy-bank text-3xl opacity-30"></i>
                 </div>
             </div>
 
-            <div class="bg-emerald-500 p-5 rounded-2xl shadow-lg text-white">
-                <h3 class="text-xs uppercase font-bold opacity-80 mb-3">Sueldo Limpio Real</h3>
-                <div class="flex justify-between items-end">
-                    <p class="text-3xl font-bold" id="sueldo-limpio">0,00 €</p>
-                    <i class="fa-solid fa-wallet text-4xl opacity-30"></i>
+            <div class="bg-[#4CAF50] p-6 text-white">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase opacity-80">Sueldo Limpio Real</p>
+                        <p id="res-limpio" class="text-3xl font-black">0,00 €</p>
+                    </div>
+                    <i class="fas fa-wallet text-3xl opacity-30"></i>
                 </div>
             </div>
         </div>
 
-        <button onclick="guardarFactura()" class="w-full bg-black text-white rounded-2xl p-5 mt-8 font-bold text-lg active:scale-95 transition-transform shadow-xl">
+        <button onclick="saveFactura()" class="btn-black active:scale-95 transition-transform">
             Guardar Factura
         </button>
 
-        <section class="mt-12">
-            <div class="flex justify-between items-end mb-4 px-2">
-                <h2 class="text-xl font-bold">Historial <span id="label-trimestre">1T</span></h2>
-                <button onclick="exportarCSV()" class="text-blue-600 font-bold text-sm">Exportar CSV</button>
+        <div class="mt-10">
+            <div class="flex justify-between items-center px-2 mb-4">
+                <h2 class="text-lg font-bold">Historial <span id="label-t">1T</span></h2>
+                <button onclick="exportCSV()" class="text-blue-600 font-bold text-sm">Exportar CSV</button>
             </div>
-            <div id="lista-facturas" class="space-y-3"></div>
-        </section>
+            <div id="historial" class="space-y-3"></div>
+        </div>
     </main>
 
     <script>
-        let currentTrimestre = Math.floor(new Date().getMonth() / 3) + 1;
-        let facturas = JSON.parse(localStorage.getItem('facturas_final')) || [];
+        let trim = Math.floor(new Date().getMonth() / 3) + 1;
+        let db = JSON.parse(localStorage.getItem('factu_v3')) || [];
 
-        function setTrimestre(t) {
-            currentTrimestre = t;
-            document.querySelectorAll('#trimestre-selector button').forEach(btn => btn.classList.remove('tab-active'));
-            document.getElementById(`t${t}`).classList.add('tab-active');
-            document.getElementById('label-trimestre').innerText = t + 'T';
-            renderFacturas();
+        function setTrim(t) {
+            trim = t;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('t'+t).classList.add('active');
+            document.getElementById('label-t').innerText = t + 'T';
+            render();
         }
 
-        const inputBase = document.getElementById('base-imponible');
-        inputBase.addEventListener('input', calcularValores);
-
-        function calcularValores() {
-            const bi = parseFloat(inputBase.value) || 0;
+        document.getElementById('base').addEventListener('input', function() {
+            const bi = parseFloat(this.value) || 0;
             const iva = bi * 0.21;
             const irpf = bi * 0.15;
-            const totalRecibido = bi + iva - irpf;
+            const total = bi + iva - irpf;
             const hucha = (iva * 0.30) + (bi * 0.16);
-            const limpio = totalRecibido - hucha;
-
-            document.getElementById('iva-calculado').innerText = iva.toFixed(2) + ' €';
-            document.getElementById('irpf-calculado').innerText = irpf.toFixed(2) + ' €';
-            document.getElementById('total-recibido').innerText = totalRecibido.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
-            document.getElementById('total-hucha').innerText = hucha.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
-            document.getElementById('sueldo-limpio').innerText = limpio.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
-        }
-
-        function guardarFactura() {
-            const cliente = document.getElementById('cliente').value;
-            const numero = document.getElementById('n-factura').value;
-            const bi = parseFloat(inputBase.value) || 0;
-
-            if (!cliente || bi <= 0) return alert("Rellena Cliente y Base Imponible");
-
-            const factura = {
-                id: Date.now(),
-                trimestre: currentTrimestre,
-                cliente,
-                numero,
-                bi,
-                fecha: new Date().toLocaleDateString('es-ES')
-            };
-
-            facturas.push(factura);
-            localStorage.setItem('facturas_final', JSON.stringify(facturas));
             
-            // Reset campos
-            inputBase.value = "";
-            document.getElementById('n-factura').value = "";
-            calcularValores();
-            renderFacturas();
+            document.getElementById('res-total').innerText = total.toLocaleString('es-ES') + ' €';
+            document.getElementById('res-iva').innerText = iva.toFixed(2) + ' €';
+            document.getElementById('res-irpf').innerText = irpf.toFixed(2) + ' €';
+            document.getElementById('res-hucha').innerText = hucha.toLocaleString('es-ES') + ' €';
+            document.getElementById('res-limpio').innerText = (total - hucha).toLocaleString('es-ES') + ' €';
+        });
+
+        function saveFactura() {
+            const c = document.getElementById('cliente').value;
+            const bi = parseFloat(document.getElementById('base').value) || 0;
+            if(!c || !bi) return alert('Faltan datos');
+
+            db.push({ t: trim, c, n: document.getElementById('nfactura').value, bi, d: new Date().toLocaleDateString() });
+            localStorage.setItem('factu_v3', JSON.stringify(db));
+            
+            document.getElementById('base').value = '';
+            document.getElementById('nfactura').value = '';
+            render();
         }
 
-        function renderFacturas() {
-            const contenedor = document.getElementById('lista-facturas');
-            const filtradas = facturas.filter(f => f.trimestre === currentTrimestre);
-            contenedor.innerHTML = "";
-
-            filtradas.reverse().forEach(f => {
+        function render() {
+            const box = document.getElementById('historial');
+            const filtered = db.filter(f => f.t === trim).reverse();
+            box.innerHTML = filtered.length ? '' : '<p class="text-center text-gray-400 py-10">Vacío</p>';
+            filtered.forEach(f => {
                 const total = f.bi + (f.bi * 0.21) - (f.bi * 0.15);
-                contenedor.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl border border-gray-100 flex justify-between items-center shadow-sm">
-                        <div>
-                            <p class="font-bold text-sm">${f.cliente}</p>
-                            <p class="text-[10px] text-gray-400 uppercase">${f.numero} • ${f.fecha}</p>
-                        </div>
-                        <p class="font-bold text-blue-600">${total.toFixed(2)}€</p>
-                    </div>
-                `;
+                box.innerHTML += `<div class="card flex justify-between items-center mb-2">
+                    <div><p class="font-bold text-sm">${f.c}</p><p class="text-[10px] text-gray-400 uppercase">${f.n} - ${f.d}</p></div>
+                    <p class="font-bold text-blue-600">${total.toFixed(2)}€</p>
+                </div>`;
             });
         }
 
-        function exportarCSV() {
-            const filtradas = facturas.filter(f => f.trimestre === currentTrimestre);
-            if(!filtradas.length) return alert("No hay datos");
-            let csv = "Fecha;Factura;Cliente;Base;IVA;IRPF\n";
-            filtradas.forEach(f => {
-                csv += `${f.fecha};${f.numero};${f.cliente};${f.bi};${(f.bi*0.21).toFixed(2)};${(f.bi*0.15).toFixed(2)}\n`;
-            });
+        function exportCSV() {
+            let csv = "Fecha;Cliente;Base\n";
+            db.filter(f => f.t === trim).forEach(f => csv += `${f.d};${f.c};${f.bi}\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', `Facturas_${currentTrimestre}T.csv`);
+            a.href = URL.createObjectURL(blob);
+            a.download = `Facturas_${trim}T.csv`;
             a.click();
         }
 
-        setTrimestre(currentTrimestre);
+        setTrim(trim);
     </script>
 </body>
 </html>
